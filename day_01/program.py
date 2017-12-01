@@ -1,12 +1,7 @@
 def generic(puzzle_input, f_next_index):
-    circular = puzzle_input * len(puzzle_input)
+    circular = puzzle_input * 2
 
-    result = 0
-    for i in range(len(puzzle_input)):
-        if circular[i] == circular[f_next_index(i)]:
-            result += int(circular[i])
-
-    return result
+    return sum([int(circular[i]) for i in range(len(puzzle_input)) if circular[i] == circular[f_next_index(i)]])
 
 
 def solve_part_1(puzzle_input):
