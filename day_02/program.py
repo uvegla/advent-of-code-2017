@@ -1,29 +1,28 @@
+def generic(lines, logic):
+    return sum([logic([int(x) for x in line.split('\t')]) for line in lines])
+
+
 def solve_part_1(lines):
-    sum = 0
-    for line in lines:
-        nums = [int(x) for x in line.split('\t')]
+    def max_min_difference(numbers):
+        return max(numbers) - min(numbers)
 
-        sum += max(nums) - min(nums)
-
-    return sum
+    return generic(lines, max_min_difference)
 
 
 def solve_part_2(lines):
-    sum = 0
-    for line in lines:
-        nums = [int(x) for x in line.split('\t')]
-
+    def evenly_divisible_values(numbers):
         divs = []
-        for i in nums:
-            for j in nums:
+        for i in numbers:
+            for j in numbers:
                 if i % j == 0 or j % i == 0:
                     divs.append(max([i, j]) // min([i, j]))
 
-        sum += max(divs)
+        return max(divs)
 
-    return sum
+    return generic(lines, evenly_divisible_values)
 
 
 if __name__ == '__main__':
-    print solve_part_1(open('input.txt').readlines())
-    print solve_part_2(open('input.txt').readlines())
+    puzzle_input = open('input.txt').readlines()
+    print solve_part_1(puzzle_input)
+    print solve_part_2(puzzle_input)
