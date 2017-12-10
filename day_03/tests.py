@@ -11,7 +11,7 @@ class Day03TestCase(TestCase):
         self.assertEqual(solve_part_1(12), 3)
 
     def test_part_1_23(self):
-        self.assertEqual(solve_part_1(1), 2)
+        self.assertEqual(solve_part_1(23), 2)
 
     def test_part_1_1024(self):
-        self.assertEqual(solve_part_1(1), 31)
+        self.assertEqual(solve_part_1(1024), 31)
