@@ -1,7 +1,4 @@
 def solve_part_1(puzzle_input):
-    if puzzle_input == 1:
-        return 0
-
     outward = outward_distance(puzzle_input)
     sideward = sideward_distance(puzzle_input, outward)
 
@@ -14,11 +11,11 @@ def outward_distance(puzzle_input):
             return i // 2
 
 
-def sideward_distance(puzzle_input, edge):
-    circle = 2 * edge + 1
-    start = (circle - 2) + puzzle_input - (circle - 2) ** 2 - 1
+def sideward_distance(puzzle_input, outward):
+    prev_square = 2 * (outward - 1) + 1
+    start = outward + puzzle_input - prev_square ** 2
 
-    return ping_pong_range(circle - 2, start=start).next()
+    return ping_pong_range(outward + 1, start=start).next()
 
 
 def ping_pong_range(n, start=0, length=10 ** 5):
@@ -31,7 +28,4 @@ def ping_pong_range(n, start=0, length=10 ** 5):
 
 
 if __name__ == '__main__':
-    # print solve_part_1(1)
-    # print solve_part_1(12)
-    # print solve_part_1(23)
-    print solve_part_1(1024)
+    print solve_part_1(325489)
