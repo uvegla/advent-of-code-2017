@@ -28,22 +28,20 @@ def ping_pong_range(n, start=0, length=10 ** 5):
 
 
 def solve_part_2(puzzle_input):
-    current = (0, 0)
+    current = (1, 0)
     grid = {(0, 0): 1}
 
     outward = 0
     while True:
         outward += 1
-        current = right(current)
 
         for direction in [up, left, down, right]:
-            direction_modifier = -1 if direction == up else 0
+            direction_modifier = -1 if direction == up else 1 if direction == right else 0
             for step in range(0, 2 * outward + direction_modifier):
                 grid[current] = calculate_field(grid, current)
 
                 if grid[current] > puzzle_input:
-                    print grid[current]
-                    exit(0)
+                    return grid[current]
 
                 current = direction(current)
 
@@ -57,9 +55,9 @@ def get_neighbours(current):
     neighbours = set()
     for dx in range(-1, 2):
         for dy in range(-1, 2):
-                neighbours.add((x + dx, y + dy))
+            neighbours.add((x + dx, y + dy))
 
-    return neighbours.difference(set(current))
+    return neighbours.difference({current})
 
 
 def up(current):
