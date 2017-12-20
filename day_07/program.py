@@ -1,10 +1,18 @@
 import re
 
-from anytree import Node
+from anytree import Node, PreOrderIter
 
 
 def solve_part_1(puzzle_input):
-    return next(node.name for node in parse(puzzle_input).values() if node.is_root)
+    return get_root(parse(puzzle_input)).name
+
+
+def solve_part_2(puzzle_input):
+    root = get_root(parse(puzzle_input))
+
+    weights, unbalanced, balanced = find_point_of_unbalance(root)
+
+    return unbalanced.weight - (weights[unbalanced] - weights[balanced])
 
 
 def parse(puzzle_input):
@@ -12,7 +20,7 @@ def parse(puzzle_input):
 
     nodes = {}
     for name, weight, _ in raw_nodes:
-        nodes[name] = Node(name, weight=weight)
+        nodes[name] = Node(name, weight=int(weight))
 
     for name, _, children in raw_nodes:
         if children:
@@ -22,5 +30,28 @@ def parse(puzzle_input):
     return nodes
 
 
+def get_root(nodes):
+    return next(node for node in nodes.values() if node.is_root)
+
+
+def find_point_of_unbalance(root, previous_layer=(None, None, None)):
+    while True:
+        weights, unbalanced, balanced = measure_layer(root)
+
+        if weights[unbalanced] == weights[balanced]:
+            return previous_layer
+        else:
+            return find_point_of_unbalance(unbalanced, (weights, unbalanced, balanced))
+
+
+def measure_layer(root):
+    weights = {child: sum([node.weight for node in PreOrderIter(child)]) for child in root.children}
+    unbalanced, balanced = max(weights, key=weights.get), min(weights, key=weights.get)
+
+    return weights, unbalanced, balanced
+
+
 if __name__ == '__main__':
-    print solve_part_1(open('input.txt').readlines())
+    lines = open('input.txt').readlines()
+    print solve_part_1(lines)
+    print solve_part_2(lines)
