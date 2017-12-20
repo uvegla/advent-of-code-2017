@@ -15,15 +15,18 @@ operations = {
 }
 
 
-def solve_part_1(puzzle_input):
+def solve_part_1_and_2(puzzle_input):
     instructions = [parse_instruction(line) for line in puzzle_input]
 
-    registers = {}
+    registers, highest_ever = {}, 0
     for r, o, v, cr, co, cv in instructions:
         if check_condition(registers, cr, co, cv):
             execute(registers, o, r, v)
 
-    return registers[max(registers, key=registers.get)]
+            highest_value = get_highest_value(registers)
+            highest_ever = highest_value if highest_value > highest_ever else highest_ever
+
+    return get_highest_value(registers), highest_ever
 
 
 def parse_instruction(line):
@@ -47,6 +50,10 @@ def get_or_initialize(registers, register):
     return registers[register]
 
 
+def get_highest_value(registers):
+    return registers[max(registers, key=registers.get)]
+
+
 if __name__ == '__main__':
     lines = open('input.txt').readlines()
-    print solve_part_1(lines)
+    print solve_part_1_and_2(lines)
