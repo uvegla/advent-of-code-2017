@@ -1,10 +1,10 @@
 from unittest import TestCase
 
-from program import solve_part_1
+from program import solve_part_1, solve_part_2
 
 
 class Day12TestCase(TestCase):
-    def test_solve_part_1(self):
+    def test_solve_part_1_and_2(self):
         lines = [
             '0 <-> 2',
             '1 <-> 1',
@@ -16,3 +16,4 @@ class Day12TestCase(TestCase):
         ]
 
         self.assertEqual(solve_part_1(lines), 6)
+        self.assertEqual(solve_part_2(lines), 2)
