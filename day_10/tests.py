@@ -1,6 +1,8 @@
 from unittest import TestCase
 
-from program import get_sections, solve_part_1, solve_part_2
+from utils.knot_hash import get_sections
+
+from program import solve_part_1, solve_part_2
 
 
 class Day10TestCase(TestCase):
