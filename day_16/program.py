@@ -37,5 +37,19 @@ COMMANDS = {
     'p': partner
 }
 
+
+def solve_part_2(programs, commands):
+    solved_permutations = {}
+
+    for _ in range(10 ** 9):
+        if programs in solved_permutations:
+            programs = solved_permutations[programs]
+        else:
+            solved_permutations[programs] = solve_part_1(programs, commands)
+
+    return programs
+
+
 if __name__ == '__main__':
     print solve_part_1('abcdefghijklmnop', open('input.txt').readline().split(','))
+    print solve_part_2('abcdefghijklmnop', open('input.txt').readline().split(','))
