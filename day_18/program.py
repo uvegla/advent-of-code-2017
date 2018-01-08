@@ -1,78 +1,85 @@
 def solve_part_1(instructions):
-    instruction_pointer = 0
     registers = {'a': 0, 'b': 0, 'f': 0, 'i': 0, 'p': 0}
 
-    last_sound_played = None
-
-    while True:
-        instruction = instructions[instruction_pointer]
-
-        if instruction.startswith('jgz'):
-            instruction_pointer += calculate_jump(registers, instruction)
-            continue
-
-        if instruction.startswith('snd'):
-            last_sound_played = registers[instruction.split()[1]]
-        elif instruction.startswith('set'):
-            execute_set(registers, instruction)
-        elif instruction.startswith('add'):
-            execute_add(registers, instruction)
-        elif instruction.startswith('mul'):
-            execute_mul(registers, instruction)
-        elif instruction.startswith('mod'):
-            execute_mod(registers, instruction)
-        else:
-            if should_terminate(registers, instruction):
-                break
-
-        instruction_pointer += 1
-
-    return last_sound_played
+    return ProcessorPartOne(registers).execute(instructions)
 
 
-def calculate_jump(registers, instruction):
-    _, register, value = instruction.split()
+class Processor(object):
+    def __init__(self, registers):
+        self.registers = registers
 
-    return int(value) if registers[register] > 0 else 1
+    def calculate_jump(self, instruction):
+        _, register, value = instruction.split()
+
+        return int(value) if self.registers[register] > 0 else 1
+
+    def execute_set(self, instruction):
+        _, register, value = instruction.split()
+
+        self.registers[register] = self.get_value(value)
+
+    def execute_add(self, instruction):
+        _, register, value = instruction.split()
+
+        self.registers[register] += self.get_value(value)
+
+    def execute_mul(self, instruction):
+        _, register, value = instruction.split()
+
+        self.registers[register] *= self.get_value(value)
+
+    def execute_mod(self, instruction):
+        _, register, value = instruction.split()
+
+        self.registers[register] %= self.get_value(value)
+
+    def get_value(self, value):
+        try:
+            value = int(value)
+        except ValueError:
+            value = self.registers[value]
+
+        return value
 
 
-def should_terminate(registers, instruction):
-    _, register = instruction.split()
+class ProcessorPartOne(Processor):
+    def __init__(self, registers):
+        super(ProcessorPartOne, self).__init__(registers)
 
-    return registers[register] > 0
+    def execute(self, instructions):
+        instruction_pointer = 0
 
+        last_sound_played = None
 
-def execute_set(registers, instruction):
-    _, register, value = instruction.split()
+        while True:
+            instruction = instructions[instruction_pointer]
 
-    registers[register] = get_value(registers, value)
+            if instruction.startswith('jgz'):
+                instruction_pointer += self.calculate_jump(instruction)
+                continue
 
+            if instruction.startswith('snd'):
+                last_sound_played = self.registers[instruction.split()[1]]
+            elif instruction.startswith('set'):
+                self.execute_set(instruction)
+            elif instruction.startswith('add'):
+                self.execute_add(instruction)
+            elif instruction.startswith('mul'):
+                self.execute_mul(instruction)
+            elif instruction.startswith('mod'):
+                self.execute_mod(instruction)
+            else:
+                if self.should_terminate(instruction):
+                    break
 
-def execute_add(registers, instruction):
-    _, register, value = instruction.split()
+            instruction_pointer += 1
 
-    registers[register] += get_value(registers, value)
+        return last_sound_played
 
+    def should_terminate(self, instruction):
+        _, register = instruction.split()
 
-def execute_mul(registers, instruction):
-    _, register, value = instruction.split()
-
-    registers[register] *= get_value(registers, value)
-
-
-def execute_mod(registers, instruction):
-    _, register, value = instruction.split()
-
-    registers[register] %= get_value(registers, value)
-
-
-def get_value(registers, value):
-    try:
-        value = int(value)
-    except ValueError:
-        value = registers[value]
-
-    return value
+        return self.registers[register] > 0
 
 
 if __name__ == '__main__':
